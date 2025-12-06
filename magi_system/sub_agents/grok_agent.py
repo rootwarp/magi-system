@@ -2,7 +2,12 @@
 
 from google.adk.agents import Agent
 from google.adk.models.lite_llm import LiteLlm
+from dotenv import load_dotenv
+
 from ..tools.reasoning_tools import chain_of_thought, compare_options
+
+
+load_dotenv()
 
 agent = Agent(
     name="grok_agent",

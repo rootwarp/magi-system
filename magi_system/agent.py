@@ -5,7 +5,12 @@ The orchestrator routes requests to specialized sub-agents based on task type.
 """
 
 from google.adk.agents import Agent
+from dotenv import load_dotenv
+
 from .sub_agents import gemini_agent, grok_agent, openai_agent
+
+
+load_dotenv()
 
 root_agent = Agent(
     name="magi_orchestrator",

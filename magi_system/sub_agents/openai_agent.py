@@ -2,7 +2,12 @@
 
 from google.adk.agents import Agent
 from google.adk.models.lite_llm import LiteLlm
+from dotenv import load_dotenv
+
 from ..tools.code_tools import analyze_code, generate_code
+
+
+load_dotenv()
 
 agent = Agent(
     name="openai_agent",

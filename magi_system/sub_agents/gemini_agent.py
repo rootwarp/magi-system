@@ -2,6 +2,9 @@
 
 from google.adk.agents import Agent
 from google.adk.tools import google_search
+from dotenv import load_dotenv
+
+load_dotenv()
 
 agent = Agent(
     name="gemini_agent",
