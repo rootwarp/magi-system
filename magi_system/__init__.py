@@ -1,7 +1,7 @@
-"""MAGI System - Multi-LLM Agent System.
+"""MAGI System - Multi-LLM Agent Voting System.
 
-A multi-agent system built with Google ADK that orchestrates
-Gemini, Grok, and OpenAI agents for different specialized tasks.
+A multi-agent voting system built with Google ADK that runs
+Gemini, Grok, and OpenAI agents in parallel and synthesizes their responses.
 """
 
 from .agent import root_agent
