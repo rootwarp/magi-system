@@ -4,4 +4,6 @@ black>=24.0.0
 ruff>=0.1.0
 
 # Project dependencies
-# Add your project dependencies here
+google-adk>=1.0.0
+litellm>=1.0.0
+python-dotenv>=1.0.0
