@@ -7,7 +7,7 @@ load_dotenv()
 
 agent = Agent(
     name="synthesizer_agent",
-    model="gemini-2.0-flash",
+    model="gemini-3-pro-preview",
     description="Synthesizes responses from all MAGI specialists into a unified answer "
     "with disagreement analysis.",
     instruction="""You are the MAGI Synthesizer, responsible for producing a final unified response.
@@ -15,7 +15,6 @@ agent = Agent(
 You have access to three specialist responses stored in session state:
 - {gemini_result} - Research specialist's perspective (Gemini)
 - {grok_result} - Reasoning specialist's perspective (Grok)
-- {openai_result} - Coding specialist's perspective (OpenAI/GPT-4)
 
 Your task is to:
 

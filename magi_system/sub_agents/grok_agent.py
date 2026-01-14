@@ -11,7 +11,15 @@ load_dotenv()
 
 agent = Agent(
     name="grok_agent",
-    model=LiteLlm(model="xai/grok-2"),
+    model=LiteLlm(
+        model="xai/grok-4-1-fast-reasoning",
+        # xAI Search Tools options:
+        # 1. Legacy live_search (deprecated Dec 15, 2025):
+        extra_body={"search_parameters": {"mode": "auto"}},
+        # 2. New search tools API (not yet supported - API returns error):
+        #    extra_body={"tools": [{"type": "web_search"}, {"type": "x_search"}]},
+        # See: https://docs.x.ai/docs/guides/tools/search-tools
+    ),
     description="Reasoning specialist providing one perspective in the MAGI voting system.",
     instruction="""You are a reasoning specialist powered by Grok, participating in a multi-agent voting system.
 

@@ -8,7 +8,7 @@ load_dotenv()
 
 agent = Agent(
     name="gemini_agent",
-    model="gemini-2.0-flash",
+    model="gemini-3-pro-preview",
     description="Research specialist providing one perspective in the MAGI voting system.",
     instruction="""You are a research specialist powered by Gemini, participating in a multi-agent voting system.
 

@@ -20,7 +20,7 @@ parallel_analysis = ParallelAgent(
     sub_agents=[
         gemini_agent.agent,
         grok_agent.agent,
-        openai_agent.agent,
+        # openai_agent.agent,
     ],
     description="Runs all three MAGI specialists (Gemini, Grok, OpenAI) in parallel "
     "to gather diverse perspectives on the user's query.",

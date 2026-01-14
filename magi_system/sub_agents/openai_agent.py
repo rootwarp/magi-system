@@ -9,11 +9,26 @@ from ..tools.code_tools import analyze_code, generate_code
 
 load_dotenv()
 
+
+search_config = {
+    "web_search_options": {
+        "search_context_size": "medium",  # "low", "medium", "high"
+        "user_location": {
+            "type": "approximate",
+            "country": "US"
+        }
+    }
+}
+
 agent = Agent(
     name="openai_agent",
-    model=LiteLlm(model="openai/gpt-4o"),
+    model=LiteLlm(
+        model="openai/gpt-5.1-chat-latest",
+        # Enable OpenAI's web search via extra_body (if supported)
+        # extra_body={"web_search_options": search_config["web_search_options"]},
+    ),
     description="Coding specialist providing one perspective in the MAGI voting system.",
-    instruction="""You are a coding specialist powered by GPT-4, participating in a multi-agent voting system.
+    instruction="""You are a coding specialist powered by GPT-5.1, participating in a multi-agent voting system.
 
 Your role is to provide your BEST response to the user's query from a DEVELOPMENT perspective.
 Even if the task is not primarily coding-focused, apply your unique capabilities:
