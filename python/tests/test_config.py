@@ -1,9 +1,6 @@
 """Tests for MAGI-002: config.py module."""
 
 from dataclasses import fields
-from unittest.mock import patch
-
-import pytest
 
 
 class TestModelConfig:
@@ -32,9 +29,7 @@ class TestModelConfig:
     def test_model_config_with_string_model(self) -> None:
         from magi_system.config import ModelConfig
 
-        config = ModelConfig(
-            name="test", model="some-model-id", role="tester"
-        )
+        config = ModelConfig(name="test", model="some-model-id", role="tester")
         assert config.name == "test"
         assert config.model == "some-model-id"
         assert config.role == "tester"

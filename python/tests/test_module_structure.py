@@ -5,9 +5,7 @@ import os
 
 import pytest
 
-MAGI_SYSTEM_DIR = os.path.join(
-    os.path.dirname(__file__), "..", "magi_system"
-)
+MAGI_SYSTEM_DIR = os.path.join(os.path.dirname(__file__), "..", "magi_system")
 
 REQUIRED_MODULES = [
     "clarification",
@@ -25,16 +23,16 @@ class TestModuleDirectoryStructure:
     @pytest.mark.parametrize("module_name", REQUIRED_MODULES)
     def test_module_directory_exists(self, module_name: str) -> None:
         module_dir = os.path.join(MAGI_SYSTEM_DIR, module_name)
-        assert os.path.isdir(module_dir), (
-            f"Module directory '{module_name}' does not exist"
-        )
+        assert os.path.isdir(
+            module_dir
+        ), f"Module directory '{module_name}' does not exist"
 
     @pytest.mark.parametrize("module_name", REQUIRED_MODULES)
     def test_module_has_init_file(self, module_name: str) -> None:
         init_file = os.path.join(MAGI_SYSTEM_DIR, module_name, "__init__.py")
-        assert os.path.isfile(init_file), (
-            f"Module '{module_name}' is missing __init__.py"
-        )
+        assert os.path.isfile(
+            init_file
+        ), f"Module '{module_name}' is missing __init__.py"
 
     @pytest.mark.parametrize("module_name", REQUIRED_MODULES)
     def test_module_is_importable(self, module_name: str) -> None:
