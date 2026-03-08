@@ -5,10 +5,13 @@ from google.adk.models.lite_llm import LiteLlm
 
 from magi_system.reflection.reflection_agents import (
     REFLECTION_INSTRUCTION,
+    create_dual_reflection,
     dual_reflection,
-    reflection_claude,
-    reflection_gemini,
 )
+
+# Access sub-agents through the dual_reflection instance
+reflection_gemini = dual_reflection.sub_agents[0]
+reflection_claude = dual_reflection.sub_agents[1]
 
 
 class TestDualReflectionAgent:
@@ -92,3 +95,8 @@ class TestReflectionImports:
         from magi_system.reflection import dual_reflection as imported
 
         assert imported is dual_reflection
+
+    def test_factory_creates_fresh_instances(self):
+        a = create_dual_reflection()
+        b = create_dual_reflection()
+        assert a is not b

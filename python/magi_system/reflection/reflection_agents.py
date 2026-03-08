@@ -59,24 +59,33 @@ QUALITY_SCORE: [1-10] where 1 = completely inadequate and 10 = comprehensive \
 coverage with high confidence\
 """
 
-reflection_gemini = LlmAgent(
-    name="reflection_gemini",
-    model="gemini-3-pro-preview",
-    instruction=REFLECTION_INSTRUCTION,
-    output_key="reflection_gemini",
-    description="Gemini reflection agent evaluating search coverage.",
-)
+def create_dual_reflection() -> ParallelAgent:
+    """Create a fresh dual reflection ParallelAgent.
 
-reflection_claude = LlmAgent(
-    name="reflection_claude",
-    model=LiteLlm(model="anthropic/claude-opus-4-6"),
-    instruction=REFLECTION_INSTRUCTION,
-    output_key="reflection_claude",
-    description="Claude reflection agent evaluating search coverage.",
-)
+    Returns a new instance each time because ADK agents track parent
+    references and cannot be reused across multiple parent agents.
+    """
+    reflection_gemini = LlmAgent(
+        name="reflection_gemini",
+        model="gemini-3-pro-preview",
+        instruction=REFLECTION_INSTRUCTION,
+        output_key="reflection_gemini",
+        description="Gemini reflection agent evaluating search coverage.",
+    )
 
-dual_reflection = ParallelAgent(
-    name="dual_reflection",
-    sub_agents=[reflection_gemini, reflection_claude],
-    description="Runs Gemini and Claude reflection agents in parallel.",
-)
+    reflection_claude = LlmAgent(
+        name="reflection_claude",
+        model=LiteLlm(model="anthropic/claude-opus-4-6"),
+        instruction=REFLECTION_INSTRUCTION,
+        output_key="reflection_claude",
+        description="Claude reflection agent evaluating search coverage.",
+    )
+
+    return ParallelAgent(
+        name="dual_reflection",
+        sub_agents=[reflection_gemini, reflection_claude],
+        description="Runs Gemini and Claude reflection agents in parallel.",
+    )
+
+
+dual_reflection = create_dual_reflection()
