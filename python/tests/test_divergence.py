@@ -88,30 +88,40 @@ class TestDivergenceDetectorConfiguration:
     def test_agent_model_is_gemini_3_pro(self, mock_adk):
         from magi_system.consensus.divergence import divergence_detector  # noqa: F811
 
-        call_kwargs = mock_adk.call_args[1]
+        call_kwargs = _get_divergence_kwargs(mock_adk)
         assert call_kwargs["model"] == "gemini-3-pro-preview"
 
     def test_agent_output_key_is_divergence_map(self, mock_adk):
         from magi_system.consensus.divergence import divergence_detector  # noqa: F811
 
-        call_kwargs = mock_adk.call_args[1]
+        call_kwargs = _get_divergence_kwargs(mock_adk)
         assert call_kwargs["output_key"] == "divergence_map"
 
     def test_agent_has_description(self, mock_adk):
         from magi_system.consensus.divergence import divergence_detector  # noqa: F811
 
-        call_kwargs = mock_adk.call_args[1]
+        call_kwargs = _get_divergence_kwargs(mock_adk)
         assert "description" in call_kwargs
         assert len(call_kwargs["description"]) > 0
+
+
+def _get_divergence_kwargs(mock_adk):
+    """Helper to find the divergence_detector LlmAgent call kwargs."""
+    from magi_system.consensus.divergence import divergence_detector  # noqa: F811
+
+    calls = [
+        c for c in mock_adk.call_args_list
+        if c[1].get("name") == "divergence_detector"
+    ]
+    assert len(calls) == 1
+    return calls[0][1]
 
 
 class TestDivergenceDetectorInstruction:
     """Verify the instruction template contains required elements."""
 
     def _get_instruction(self, mock_adk):
-        from magi_system.consensus.divergence import divergence_detector  # noqa: F811
-
-        return mock_adk.call_args[1]["instruction"]
+        return _get_divergence_kwargs(mock_adk)["instruction"]
 
     def test_instruction_contains_research_plan(self, mock_adk):
         instruction = self._get_instruction(mock_adk)

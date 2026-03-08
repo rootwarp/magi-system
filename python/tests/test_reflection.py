@@ -12,9 +12,12 @@ from google.adk.agents import LlmAgent, ParallelAgent
 from magi_system.reflection import dual_reflection
 from magi_system.reflection.reflection_agents import (
     REFLECTION_INSTRUCTION,
-    reflection_claude,
-    reflection_gemini,
+    create_dual_reflection,
 )
+
+# Get sub-agents from the module-level dual_reflection instance
+reflection_gemini = dual_reflection.sub_agents[0]
+reflection_claude = dual_reflection.sub_agents[1]
 
 
 class TestReflectionModuleExports:
@@ -28,7 +31,7 @@ class TestReflectionModuleExports:
     def test_all_length(self):
         import magi_system.reflection as mod
 
-        assert len(mod.__all__) == 1
+        assert len(mod.__all__) == 2
 
     def test_module_docstring_exists(self):
         import magi_system.reflection as mod
@@ -43,9 +46,9 @@ class TestDualReflectionSubAgents:
         names = {a.name for a in dual_reflection.sub_agents}
         assert names == {"reflection_gemini", "reflection_claude"}
 
-    def test_sub_agents_are_the_module_level_instances(self):
-        assert dual_reflection.sub_agents[0] is reflection_gemini
-        assert dual_reflection.sub_agents[1] is reflection_claude
+    def test_sub_agents_are_from_dual_reflection(self):
+        assert dual_reflection.sub_agents[0].name == "reflection_gemini"
+        assert dual_reflection.sub_agents[1].name == "reflection_claude"
 
     def test_dual_reflection_name(self):
         assert dual_reflection.name == "dual_reflection"

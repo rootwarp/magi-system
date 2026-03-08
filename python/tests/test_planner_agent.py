@@ -87,84 +87,86 @@ class TestPlannerAgentConfiguration:
         # Re-import to trigger fresh construction
         from magi_system.planning import planner_agent  # noqa: F811
 
-        call_kwargs = mock_adk.call_args[1]
-        assert "name" in call_kwargs
-        assert call_kwargs["name"] == "planner"
+        planner_calls = [
+            c for c in mock_adk.call_args_list if c[1].get("name") == "planner"
+        ]
+        assert len(planner_calls) == 1
+        assert planner_calls[0][1]["name"] == "planner"
 
     def test_agent_model_is_gemini_3_pro(self, mock_adk):
         from magi_system.planning import planner_agent  # noqa: F811
 
-        call_kwargs = mock_adk.call_args[1]
-        assert call_kwargs["model"] == "gemini-3-pro-preview"
+        planner_calls = [
+            c for c in mock_adk.call_args_list if c[1].get("name") == "planner"
+        ]
+        assert planner_calls[0][1]["model"] == "gemini-3-pro-preview"
 
     def test_agent_output_key_is_research_plan(self, mock_adk):
         from magi_system.planning import planner_agent  # noqa: F811
 
-        call_kwargs = mock_adk.call_args[1]
-        assert call_kwargs["output_key"] == "research_plan"
+        planner_calls = [
+            c for c in mock_adk.call_args_list if c[1].get("name") == "planner"
+        ]
+        assert planner_calls[0][1]["output_key"] == "research_plan"
 
     def test_agent_has_description(self, mock_adk):
         from magi_system.planning import planner_agent  # noqa: F811
 
-        call_kwargs = mock_adk.call_args[1]
-        assert "description" in call_kwargs
-        assert len(call_kwargs["description"]) > 0
+        planner_calls = [
+            c for c in mock_adk.call_args_list if c[1].get("name") == "planner"
+        ]
+        assert "description" in planner_calls[0][1]
+        assert len(planner_calls[0][1]["description"]) > 0
+
+
+def _get_planner_kwargs(mock_adk):
+    """Helper to find the planner LlmAgent call kwargs from call_args_list."""
+    from magi_system.planning import planner_agent  # noqa: F811
+
+    planner_calls = [
+        c for c in mock_adk.call_args_list if c[1].get("name") == "planner"
+    ]
+    assert len(planner_calls) == 1, f"Expected 1 planner call, got {len(planner_calls)}"
+    return planner_calls[0][1]
 
 
 class TestPlannerAgentInstruction:
     """Verify the instruction template contains required elements."""
 
     def test_instruction_reads_research_brief(self, mock_adk):
-        from magi_system.planning import planner_agent  # noqa: F811
-
-        instruction = mock_adk.call_args[1]["instruction"]
-        assert "{research_brief}" in instruction
+        call_kwargs = _get_planner_kwargs(mock_adk)
+        assert "{research_brief}" in call_kwargs["instruction"]
 
     def test_instruction_specifies_complexity_levels(self, mock_adk):
-        from magi_system.planning import planner_agent  # noqa: F811
-
-        instruction = mock_adk.call_args[1]["instruction"]
+        instruction = _get_planner_kwargs(mock_adk)["instruction"]
         assert "simple" in instruction.lower()
         assert "medium" in instruction.lower()
         assert "deep" in instruction.lower()
 
     def test_instruction_specifies_sub_question_ranges(self, mock_adk):
-        from magi_system.planning import planner_agent  # noqa: F811
-
-        instruction = mock_adk.call_args[1]["instruction"]
-        # Should mention the sub-question count ranges
+        instruction = _get_planner_kwargs(mock_adk)["instruction"]
         assert "3-5" in instruction or ("3" in instruction and "5" in instruction)
         assert "5-8" in instruction or ("5" in instruction and "8" in instruction)
         assert "8-15" in instruction or ("8" in instruction and "15" in instruction)
 
     def test_instruction_has_complexity_field(self, mock_adk):
-        from magi_system.planning import planner_agent  # noqa: F811
-
-        instruction = mock_adk.call_args[1]["instruction"]
+        instruction = _get_planner_kwargs(mock_adk)["instruction"]
         assert "COMPLEXITY:" in instruction
 
     def test_instruction_has_sub_question_format(self, mock_adk):
-        from magi_system.planning import planner_agent  # noqa: F811
-
-        instruction = mock_adk.call_args[1]["instruction"]
+        instruction = _get_planner_kwargs(mock_adk)["instruction"]
         assert "SQ" in instruction
 
     def test_instruction_has_priority_field(self, mock_adk):
-        from magi_system.planning import planner_agent  # noqa: F811
-
-        instruction = mock_adk.call_args[1]["instruction"]
+        instruction = _get_planner_kwargs(mock_adk)["instruction"]
         assert "PRIORITY:" in instruction
 
     def test_instruction_has_depends_on_field(self, mock_adk):
-        from magi_system.planning import planner_agent  # noqa: F811
-
-        instruction = mock_adk.call_args[1]["instruction"]
+        instruction = _get_planner_kwargs(mock_adk)["instruction"]
         assert "DEPENDS_ON:" in instruction
 
     def test_instruction_priority_values(self, mock_adk):
-        from magi_system.planning import planner_agent  # noqa: F811
-
-        instruction = mock_adk.call_args[1]["instruction"]
+        instruction = _get_planner_kwargs(mock_adk)["instruction"]
         assert "high" in instruction.lower()
         assert "medium" in instruction.lower()
         assert "low" in instruction.lower()
