@@ -47,6 +47,7 @@ class PipelineConfig:
         api_timeout_seconds: Timeout in seconds for external API calls.
         max_retries: Maximum number of retry attempts for transient failures.
         retry_base_delay: Base delay in seconds for exponential backoff.
+        max_context_chars: Maximum characters for aggregated context to prevent overflow.
     """
 
     orchestrator: ModelConfig
@@ -62,6 +63,7 @@ class PipelineConfig:
     api_timeout_seconds: int = 30
     max_retries: int = 3
     retry_base_delay: float = 1.0
+    max_context_chars: int = 50000
 
 
 def load_config() -> PipelineConfig:

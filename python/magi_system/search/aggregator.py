@@ -10,6 +10,7 @@ import re
 from typing import AsyncIterator
 
 from google.adk.agents import BaseAgent
+from magi_system.tools.context_utils import summarize_search_results
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events.event import Event
 from google.genai import types as genai_types
@@ -45,6 +46,8 @@ class SearchResultsAggregator(BaseAgent):
         aggregated = (
             "\n---\n\n".join(results) if results else "No search results available."
         )
+        max_chars = state.get("max_context_chars", 50000)
+        aggregated = summarize_search_results(aggregated, max_chars=max_chars)
         state["all_search_results"] = aggregated
 
         yield genai_types.Content(
