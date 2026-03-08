@@ -18,6 +18,7 @@ def _mock_google_adk():
         "google.adk.models": MagicMock(),
         "google.adk.models.lite_llm": MagicMock(),
         "google.adk.tools": MagicMock(),
+        "google.adk.tools.agent_tool": MagicMock(),
         "google.adk.tools.exit_loop_tool": MagicMock(),
         "google.adk.tools.google_search": MagicMock(),
     }
