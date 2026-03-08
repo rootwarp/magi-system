@@ -3,6 +3,7 @@
 from .code_tools import analyze_code, generate_code
 from .content_extraction import extract_page_content
 from .reasoning_tools import chain_of_thought, compare_options
+from .retry import TRANSIENT_ERRORS, retry_with_backoff
 
 __all__ = [
     "analyze_code",
@@ -10,4 +11,6 @@ __all__ = [
     "generate_code",
     "chain_of_thought",
     "compare_options",
+    "retry_with_backoff",
+    "TRANSIENT_ERRORS",
 ]

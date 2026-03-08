@@ -44,6 +44,9 @@ class PipelineConfig:
         divergence_threshold: Threshold for detecting model disagreement.
         min_models_for_consensus: Minimum models that must agree for consensus.
         max_searches_per_agent: Maximum search calls each agent can make.
+        api_timeout_seconds: Timeout in seconds for external API calls.
+        max_retries: Maximum number of retry attempts for transient failures.
+        retry_base_delay: Base delay in seconds for exponential backoff.
     """
 
     orchestrator: ModelConfig
@@ -56,6 +59,9 @@ class PipelineConfig:
     divergence_threshold: float = 0.7
     min_models_for_consensus: int = 2
     max_searches_per_agent: int = 5
+    api_timeout_seconds: int = 30
+    max_retries: int = 3
+    retry_base_delay: float = 1.0
 
 
 def load_config() -> PipelineConfig:
