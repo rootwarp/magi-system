@@ -77,8 +77,11 @@ class TestPlannerAgentConfiguration:
     def test_agent_created_with_llm_agent(self, mock_adk):
         from magi_system.planning.planner_agent import planner_agent  # noqa: F811
 
-        # The module-level planner_agent should be the return value of LlmAgent()
-        mock_adk.assert_called_once()
+        # LlmAgent should have been called with name="planner"
+        planner_calls = [
+            c for c in mock_adk.call_args_list if c[1].get("name") == "planner"
+        ]
+        assert len(planner_calls) == 1
 
     def test_agent_name_is_planner(self, mock_adk):
         # Re-import to trigger fresh construction
