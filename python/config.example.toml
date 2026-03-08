@@ -1,0 +1,19 @@
+# MAGI System Configuration
+# Copy this file to config.toml and customize as needed.
+# Values shown are the defaults.
+
+[pipeline]
+max_research_iterations = 3
+max_discussion_rounds = 3
+max_sub_questions = 15
+divergence_threshold = 0.7
+
+# Override model identifiers (optional)
+# orchestrator_model = "gemini-3-pro-preview"
+# synthesis_model = "anthropic/claude-opus-4-6"
+
+# Environment variable overrides (highest precedence):
+#   MAGI_ORCHESTRATOR_MODEL  - orchestrator model identifier
+#   MAGI_MAX_ITERATIONS      - max research iterations
+#   MAGI_MAX_SUB_QUESTIONS   - max sub-questions per query
+#   MAGI_DIVERGENCE_THRESHOLD - divergence detection threshold (0.0-1.0)
