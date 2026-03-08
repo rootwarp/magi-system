@@ -1,10 +1,33 @@
 # Project Overview
 
-This is a Python project.
+This is a multi-language project containing Python and Go code.
 
-## Development Setup
+## Project Structure
+
+```
+.
+├── python/            # Python codebase
+│   ├── magi_system/   # Main Python package
+│   ├── tests/         # Python test files
+│   ├── requirements.txt
+│   └── pyproject.toml
+├── golang/            # Go codebase
+│   ├── cmd/           # Command entrypoints
+│   ├── internal/      # Private application code
+│   ├── pkg/           # Public library code
+│   └── go.mod
+├── CLAUDE.md
+├── LICENSE
+└── README.md
+```
+
+## Python
+
+### Development Setup
 
 ```bash
+cd python
+
 # Create virtual environment
 python -m venv venv
 
@@ -17,30 +40,49 @@ venv\Scripts\activate  # On Windows
 pip install -r requirements.txt
 ```
 
-## Project Structure
-
-```
-.
-├── src/           # Source code
-├── tests/         # Test files
-├── requirements.txt
-└── README.md
-```
-
-## Code Style
+### Code Style
 
 - Follow PEP 8 conventions
 - Use type hints for function signatures
 - Write docstrings for public functions and classes
 
-## Testing
+### Testing
 
 ```bash
+cd python
 pytest tests/
 ```
 
-## Common Commands
+### Common Commands
 
-- Run tests: `pytest`
-- Format code: `black .`
-- Lint code: `ruff check .`
+- Run tests: `cd python && pytest`
+- Format code: `cd python && black .`
+- Lint code: `cd python && ruff check .`
+
+## Go
+
+### Development Setup
+
+```bash
+cd golang
+go mod tidy
+```
+
+### Code Style
+
+- Follow standard Go conventions
+- Use `gofmt` / `goimports` for formatting
+- Write GoDoc comments for exported functions and types
+
+### Testing
+
+```bash
+cd golang
+go test ./...
+```
+
+### Common Commands
+
+- Run tests: `cd golang && go test ./...`
+- Build: `cd golang && go build ./...`
+- Lint code: `cd golang && golangci-lint run`
