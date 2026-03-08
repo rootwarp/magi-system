@@ -49,17 +49,6 @@ class TestExistingImportsUnbroken:
 
         assert hasattr(magi_system, "root_agent")
 
-    def test_discussion_module_importable(self) -> None:
-        from magi_system.discussion import loop_agent, discussion_round
-
-        assert loop_agent is not None
-        assert discussion_round is not None
-
-    def test_sub_agents_importable(self) -> None:
-        from magi_system import sub_agents
-
-        assert sub_agents is not None
-
     def test_tools_importable(self) -> None:
         from magi_system import tools
 

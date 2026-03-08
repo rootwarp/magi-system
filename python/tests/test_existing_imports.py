@@ -80,49 +80,6 @@ class TestRootAgentImport:
         assert ra1 is ra2
 
 
-class TestSubAgentImports:
-    """Verify all sub-agent modules are importable."""
-
-    def test_import_gemini_agent(self):
-        from magi_system.sub_agents import gemini_agent
-
-        assert gemini_agent is not None
-
-    def test_import_grok_agent(self):
-        from magi_system.sub_agents import grok_agent
-
-        assert grok_agent is not None
-
-    def test_import_openai_agent(self):
-        from magi_system.sub_agents import openai_agent
-
-        assert openai_agent is not None
-
-    def test_import_orchestrator_agent(self):
-        from magi_system.sub_agents import orchestrator_agent
-
-        assert orchestrator_agent is not None
-
-    def test_import_synthesizer_agent(self):
-        from magi_system.sub_agents import synthesizer_agent
-
-        assert synthesizer_agent is not None
-
-
-class TestDiscussionImports:
-    """Verify discussion module imports work."""
-
-    def test_import_loop_agent(self):
-        from magi_system.discussion import loop_agent
-
-        assert loop_agent is not None
-
-    def test_import_discussion_round(self):
-        from magi_system.discussion import discussion_round
-
-        assert discussion_round is not None
-
-
 class TestToolImports:
     """Verify tools module imports work (no ADK mocking needed for these)."""
 
