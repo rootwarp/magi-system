@@ -18,6 +18,7 @@ from google.adk.tools import google_search
 
 from ..config import ModelConfig, PipelineConfig
 from ..tools.content_extraction import extract_page_content
+from .effort_config import get_effort_level
 
 SEARCH_INSTRUCTION_TEMPLATE = """\
 You are a search agent researching a specific sub-question as part of a \
@@ -112,8 +113,11 @@ class DynamicSearchFanout(BaseAgent):
     ) -> AsyncIterator[Event]:
         research_plan = ctx.session.state.get("research_plan", "")
 
+        effort = get_effort_level(research_plan)
+
         sub_questions = _parse_sub_questions(research_plan)
-        sub_questions = sub_questions[: self.config.max_sub_questions]
+        max_sq = min(effort.max_sub_questions, self.config.max_sub_questions)
+        sub_questions = sub_questions[:max_sq]
 
         if not sub_questions:
             return

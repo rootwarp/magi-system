@@ -45,9 +45,15 @@ def _make_mock_ctx(research_plan=""):
     return ctx
 
 
-def _make_plan(n: int) -> str:
-    """Generate a research plan with n sub-questions."""
-    return "\n".join(f"SQ{i}: Sub-question number {i}?" for i in range(1, n + 1))
+def _make_plan(n: int, complexity: str = "deep") -> str:
+    """Generate a research plan with n sub-questions.
+
+    Includes a COMPLEXITY field so effort scaling allows the requested
+    number of sub-questions through (default: deep = up to 15).
+    """
+    header = f"COMPLEXITY: {complexity}\n\nSUB_QUESTIONS:\n"
+    questions = "\n".join(f"SQ{i}: Sub-question number {i}?" for i in range(1, n + 1))
+    return header + questions
 
 
 async def _collect_events(agent, ctx):
