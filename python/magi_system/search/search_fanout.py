@@ -7,12 +7,16 @@ them to multiple search agents in parallel.
 from __future__ import annotations
 
 import re
-from typing import Union
+import secrets
+from typing import AsyncIterator, Union
 
+from google.adk.agents import BaseAgent, LlmAgent, ParallelAgent
+from google.adk.agents.invocation_context import InvocationContext
+from google.adk.events.event import Event
 from google.adk.models.lite_llm import LiteLlm
 from google.adk.tools import google_search
 
-from ..config import ModelConfig
+from ..config import ModelConfig, PipelineConfig
 from ..tools.content_extraction import extract_page_content
 
 SEARCH_INSTRUCTION_TEMPLATE = """\
@@ -89,6 +93,73 @@ def _get_model_for_search(
             extra_body={"search_parameters": {"mode": "auto"}},
         )
     return model_cfg.model
+
+
+class DynamicSearchFanout(BaseAgent):
+    """Dynamically constructs parallel search agents based on research plan.
+
+    Reads the research_plan from session state, parses it into sub-questions,
+    and creates a nested ParallelAgent structure that fans out search across
+    multiple models for each sub-question.
+    """
+
+    config: PipelineConfig
+
+    model_config = {"arbitrary_types_allowed": True}
+
+    async def _run_async_impl(
+        self, ctx: InvocationContext
+    ) -> AsyncIterator[Event]:
+        research_plan = ctx.session.state.get("research_plan", "")
+
+        sub_questions = _parse_sub_questions(research_plan)
+        sub_questions = sub_questions[: self.config.max_sub_questions]
+
+        if not sub_questions:
+            return
+
+        run_id = secrets.token_hex(4)
+
+        sq_groups: list[ParallelAgent] = []
+        for sq_idx, sq_text in enumerate(sub_questions, 1):
+            sq_id = f"sq{sq_idx}"
+            model_agents: list[LlmAgent] = []
+
+            for model_cfg in self.config.search_models:
+                if not model_cfg.enabled:
+                    continue
+
+                agent_name = f"search_{model_cfg.name}_{sq_id}_{run_id}"
+                output_key = f"{sq_id}_{model_cfg.name}"
+
+                instruction = SEARCH_INSTRUCTION_TEMPLATE.replace(
+                    "{sub_question}", sq_text
+                )
+
+                agent = LlmAgent(
+                    name=agent_name,
+                    model=_get_model_for_search(model_cfg),
+                    instruction=instruction,
+                    tools=_get_tools_for_model(model_cfg),
+                    output_key=output_key,
+                    description=f"Search agent for {sq_text[:50]}...",
+                )
+                model_agents.append(agent)
+
+            if model_agents:
+                group = ParallelAgent(
+                    name=f"sq_group_{sq_idx}_{run_id}",
+                    sub_agents=model_agents,
+                )
+                sq_groups.append(group)
+
+        if sq_groups:
+            fanout = ParallelAgent(
+                name=f"search_fanout_{run_id}",
+                sub_agents=sq_groups,
+            )
+            async for event in fanout.run_async(ctx):
+                yield event
 
 
 def _parse_sub_questions(plan: str) -> list[str]:
