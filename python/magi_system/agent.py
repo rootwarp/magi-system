@@ -1,10 +1,10 @@
 """MAGI System research pipeline using ADK Workflow Agents.
 
-This is the main entry point for the MAGI multi-agent system.
-The pipeline processes queries through three stages:
+Full 6-step pipeline:
 1. Clarifier refines the user query into a structured research brief
 2. Planner decomposes the brief into prioritized sub-questions
-3. DynamicSearchFanout dispatches parallel search agents per sub-question
+3-5. Research loop (search fanout → aggregator → reflection → consensus)
+6. Synthesizer produces the final structured research report
 """
 
 from google.adk.agents import SequentialAgent
@@ -12,45 +12,23 @@ from dotenv import load_dotenv
 
 from .clarification import clarifier_agent
 from .config import load_config
+from .pipeline import create_research_loop
 from .planning import planner_agent
-from .search import DynamicSearchFanout
+from .synthesis import synthesizer_agent
 
 load_dotenv()
 
 config = load_config()
 
-search_fanout = DynamicSearchFanout(
-    name="search_fanout",
-    config=config,
-)
+research_loop = create_research_loop(config)
 
-# MAGI Research Pipeline:
-# Step 1: Clarifier refines user query into a research brief
-# Step 2: Planner decomposes brief into sub-questions
-# Step 3: DynamicSearchFanout fans out search across models per sub-question
 root_agent = SequentialAgent(
     name="magi_research_pipeline",
     sub_agents=[
         clarifier_agent.agent,
         planner_agent,
-        search_fanout,
+        research_loop,
+        synthesizer_agent,
     ],
-    description="MAGI research pipeline that clarifies queries, plans sub-questions, "
-    "and fans out parallel search across multiple models.",
+    description="MAGI research pipeline: clarify → plan → research loop → synthesize.",
 )
-
-# --- Previous pipeline (MAGI Discussion System) ---
-# Preserved for rollback reference.
-#
-# from .discussion import loop_agent
-# from .sub_agents import synthesizer_agent
-#
-# root_agent = SequentialAgent(
-#     name="magi_discussion_system",
-#     sub_agents=[
-#         loop_agent,
-#         synthesizer_agent.agent,
-#     ],
-#     description="MAGI discussion system that runs iterative multi-agent discussions "
-#     "with orchestrated consensus detection, then synthesizes final response.",
-# )
